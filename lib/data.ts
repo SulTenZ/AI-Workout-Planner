@@ -33,3 +33,33 @@ export async function getUserPrograms() {
     return [];
   }
 }
+
+// Fungsi baru untuk mengambil satu program berdasarkan ID
+export async function getProgramById(programId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return null;
+  }
+
+  try {
+    const program = await prisma.program.findUnique({
+      where: {
+        id: programId,
+        // Keamanan tambahan: pastikan program ini milik user yang sedang login
+        userId: session.user.id, 
+      },
+      include: {
+        exercises: {
+          orderBy: {
+            // Urutkan latihan berdasarkan urutan penambahannya, jika perlu.
+            // Karena kita tidak punya field order, kita biarkan default.
+          },
+        },
+      },
+    });
+    return program;
+  } catch (error) {
+    console.error("Failed to fetch program:", error);
+    return null;
+  }
+}

@@ -25,13 +25,13 @@ export const config: NextAuthConfig = {
           where: { email: email as string },
         });
 
-        if (!user || !user.passwordHash) {
+        if (!user || !user.password) {
           return null;
         }
 
         const isPasswordValid = await bcrypt.compare(
           password as string,
-          user.passwordHash
+          user.password
         );
 
         if (!isPasswordValid) {
@@ -65,7 +65,7 @@ export const config: NextAuthConfig = {
     },
   },
   pages: {
-    signIn: "/auth/login",
+    signIn: "/login",
   },
   // 'secret' tidak lagi diperlukan di 'config' utama,
   // tapi NextAuth akan menggunakan NEXTAUTH_SECRET dari .env
